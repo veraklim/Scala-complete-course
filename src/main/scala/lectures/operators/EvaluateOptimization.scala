@@ -26,7 +26,7 @@ object EvaluateOptimization extends App with Data {
     Computation.computation(filterData, dataArray)
   }
 //
-  println("Elapsed time in computation(): " + (System.currentTimeMillis() - computationStartTimestamp))
+  println("Elapsed time in computation(): " + (System.currentTimeMillis() - computationStartTimestamp)) //11226
 //
 //
 //
@@ -39,7 +39,7 @@ object EvaluateOptimization extends App with Data {
   }
 //
   val partiallyAppliedDuration = System.currentTimeMillis() - partiallyAppliedStartTimestamp
-  println("Elapsed time in partiallyAppliedCurriedFunction(): " + partiallyAppliedDuration)
+  println("Elapsed time in partiallyAppliedCurriedFunction(): " + partiallyAppliedDuration) //11226
 //
 //
 //
@@ -52,13 +52,17 @@ object EvaluateOptimization extends App with Data {
   }
 //
   val filterAppliedDuration = System.currentTimeMillis() - filterAppliedStartTimestamp
-  println("Elapsed time in filterApplied():" + filterAppliedDuration)
+  println("Elapsed time in filterApplied():" + filterAppliedDuration) //115
 //
 //  // ВЫВЕСТИ РАЗНИЦУ В ПРОДОЛЖИТЕЛЬНОСТИ ВЫПОЛНЕНИЯ МЕЖДУ КАРРИРОВАННОЙ ВЕРСИЕЙ
 //  // И ФУНКЦИОНАЛЬНОЙ
 //
   val diff = partiallyAppliedDuration - filterAppliedDuration
 //
-  println(s"Difference is about $diff milliseconds")
+  println(s"Difference is about $diff milliseconds") //11111
+ 
+ //Такая разница потому что Thread.sleep(100) в functionalComputation запускалось 1 раз при инициализации 
+ //val filterApplied = functionalComputation(filterData), и 100 запускался уже результат functionalComputation (то есть функция).
+ //А partiallyAppliedCurriedFunction вычислялось каждый раз заново.
 }
 
