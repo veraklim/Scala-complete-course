@@ -39,11 +39,9 @@ object Authentication extends App {
   }
 
   val authenticated: List[Option[User]] = for (user <- testUsers) yield {
-    authByCard.lift(user) match {
-      case a:Some[User] => a
-      case _ => authByLP.lift(user)
-    }
+    authByCard.lift(user) orElse authByLP.lift(user)
   }
- authenticated.flatten foreach println
+
+  authenticated.flatten foreach println
 
 }
