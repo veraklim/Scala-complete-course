@@ -33,11 +33,10 @@ object Competition extends App {
   def toInt[T](a: T): Int = {
     val reg1 = ("[0-9]+[.0]*").r
     val reg2 = ("[0-9]+").r
-    a.toString() match {
-      case reg1() => a.toString() match {
-        case reg2() => a.toString().toInt //все "вида" Integer
-        case _ => a.asInstanceOf[Double].toInt //Double
-      }
+    val str = a.toString()
+    str match {
+      case reg2() => str.toInt //все "вида" Integer
+      case reg1() => str.toDouble.toInt //Double
       case _ => {
         throw new Exception("Wrong type")
       }
