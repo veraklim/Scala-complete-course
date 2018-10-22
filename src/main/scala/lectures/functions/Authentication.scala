@@ -41,7 +41,7 @@ object Authentication extends App {
   val authenticated: List[Option[User]] = {
     val auth = (authByCard orElse authByLP).lift
     for (user <- testUsers) yield {
-      auth(user)
+      auth(user) 
     }
   }
 
