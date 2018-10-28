@@ -51,6 +51,8 @@ object ConnectionProducer extends FailUtil {
 case class Connection(resource: Resource) {
   private val defaultResult = "something went wrong!"
 
+  def getDefault(): String = defaultResult
+
   //ConnectionProducer.result(this)
   def result(): String = ConnectionProducer.result(this)
 }
@@ -59,31 +61,24 @@ case class Resource(name: String)
 
 object OptionVsNPE extends App {
 
- def getConnection(res: Resource): Connection = {
+  def getConnection(res: Resource): Connection = {
     val con = ConnectionProducer.produce(res)
-    Option(con) match {
-      case s: Some[Connection] => con
-      case _ => getConnection(res)
-    }
+    Option(con) getOrElse getConnection(res)
   }
- 
+
   def businessLogic: String = try {
     // ResourceProducer
-    val result: String = ResourceProducer.produce
-      Option(res) match {
-        case r: Some[Resource] => {
-          val con = getConnection(res)
-          val finRes = con.result()
-          Option(finRes) match {
-            case fr: Some[String] => finRes
-            case _ => con.getDefault()
-          }
-        }
-        case _ => throw new ResourceException
+    val result = ResourceProducer.produce
+    Option(result) match {
+      case r: Some[Resource] => {
+        val con = getConnection(result)
+        val finRes = con.result()
+        Option(finRes) getOrElse con.getDefault()
       }
+      case _ => throw new ResourceException
     }
-    println(result)
-    result
+    //println(result)
+    //result.name
   } catch {
     case e: ResourceException => {
       println("Try again with new resource")
@@ -91,5 +86,5 @@ object OptionVsNPE extends App {
     }
   }
 
-  businessLogic
+  println(businessLogic)
 }
