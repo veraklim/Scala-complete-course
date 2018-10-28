@@ -7,15 +7,13 @@ package lectures.collections
   */
 object MergeSortImpl extends App {
 
-  private def merge(data1: Seq[Int], data2: Seq[Int]): Seq[Int] = data1 match {
-    case Nil => data2
-    case data1 => data2 match {
-      case Nil => data1
-      case data2 => {
-        if (data1.head <= data2.head) merge(data1.tail, data1.head +: data2)
-        else merge(data1.tail, data2.head +: merge(Seq(data1.head), data2.tail))
+  private def merge(data1: Seq[Int], data2: Seq[Int]): Seq[Int] = (data1, data2) match {
+    case (Nil, data2) => data2
+    case (data1, Nil) => data1
+    case _ => {
+        if (data1.head <= data2.head) data1.head +: merge(data1.tail, data2)
+        else data2.head +: merge(data1, data2.tail)
       }
-    }
   }
 
   def mergeSort(data: Seq[Int]): Seq[Int] = {
