@@ -22,23 +22,23 @@ object MyListImpl extends App {
     def flatMap(f: (Int => MyList)) =
       MyList(data.flatMap(inp => f(inp).data))
 
-    def map(f: (Int) => Int) = this.flatMap(x => MyList(List(f(x))))
+    def map(f: (Int) => Int) = flatMap(x => MyList(List(f(x))))
 
-    def foldLeft(acc: Int)(f: ((Int, Int) => Int)): Int = this.data match {
-      case head :: tail => tail.foldLeft(f(acc, head))(f)
-      case head :: Nil => f(acc, head)
-      case Nil => 0
+    def foldLeft(acc: Int)(f: ((Int, Int) => Int)): Int = data match {
+      case head :: Nil  => f(acc, head)
+      case head :: tail => MyList(tail).foldLeft(f(acc, head))(f)
+      case Nil          => acc
     }
 
-    def filter(f: Int => Boolean) = this.flatMap(x => {
-      if (f(x)) MyList(List(x))
-      else MyList(List[Int]())
-    })
+    def filter(f: Int => Boolean) =
+      flatMap(x => {
+        if (f(x)) MyList(List(x))
+        else MyList(List[Int]())
+      })
   }
 
   require(MyList(List(1, 2, 3, 4, 5, 6)).map(_ * 2).data == List(2, 4, 6, 8, 10, 12))
   require(MyList(List(1, 2, 3, 4, 5, 6)).filter(_ % 2 == 0).data == List(2, 4, 6))
   require(MyList(List(1, 2, 3, 4, 5, 6)).foldLeft(0)((a, b) => a + b) == 21)
   require(MyList(Nil).foldLeft(0)((a, b) => a + b) == 0)
-
 }
