@@ -27,21 +27,36 @@ package lectures.operators
 
 object Competition extends App {
 
-  val locals = Map("Artem" -> 6, "Sergey" -> 5, "Anton" -> 2, "Vladimir" -> "2", "Alexander" -> 4D)
+  val locals = Map("Artem" -> 6, "Sergey" -> 5D, "Anton" -> '2', "Vladimir" -> "2", "Alexander" -> 4L)
   val foreigners = Map[String, Int]("John" -> 3, "James" -> 1, "Tom" -> 2, "Dick" -> 5, "Eric" -> 6)
 
-  //  val results = for (l <- locals;
-  //                     ???) {
-  //    val localName = l._1
-  //    val localValue = l._2
-  //    ???
-  //  }
+  def toInt[T](a: T): Int = {
+    val reg1 = ("[0-9]+[.0]*").r
+    val reg2 = ("[0-9]+").r
+    val str = a.toString()
+    str match {
+      case reg2() => str.toInt //все "вида" Integer
+      case reg1() => str.toDouble.toInt //Double
+      case _ => {
+        throw new Exception("Wrong type")
+      }
+    }
+  }
 
-  //  var finalResult = 0
-  //  for (r <- results) {
-  //    if (???) finalResult = finalResult + 1
-  //    else ???
-  //  }
+  val results = for (l <- locals;
+                     f <- foreigners) yield {
+    (l._1 + " vs " + f._1, toInt(l._2) - f._2)
+  }
 
-  print("Победила дружба")
+  //println(results)
+  var finalResult = 0
+  for (r <- results) {
+    if (r._2 > 0) finalResult = finalResult + 1
+    else finalResult = finalResult - 1
+  }
+  //println(finalResult)
+
+  if (finalResult > 0) println("Наша взяла")
+  else if (finalResult < 0) println("Продули")
+  else println("Победила дружба")
 }
