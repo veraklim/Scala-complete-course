@@ -49,18 +49,12 @@ object CouriersWithComprehension extends App {
 
   def serveAddresses(addresses: List[Address], couriers: List[Courier]) = {
 
-    def accum(acc: Int, couriers: List[Courier]): Int = couriers match {
-      case Nil => acc
-      case _ => {
-        val trafficDegree = traffic().degree
-        accum((0 until couriers.head.canServe).fold(acc) { (acc, t) =>
-          if (trafficDegree < 5 && acc < addresses.length) acc + 1
-          else acc
-        }, couriers.tail)
-      }
-    }
+    val accum = couriers.filter(_ => traffic().degree < 5).foldLeft(0)((acc, i) =>
+      if (addresses.length >= i.canServe + acc) i.canServe + acc
+      else addresses.length
+    )
 
-    addresses.take(accum(0, couriers))
+    addresses.take(accum)
   }
 
   def traffic(): Traffic = new Traffic(Math.random() * 10)
